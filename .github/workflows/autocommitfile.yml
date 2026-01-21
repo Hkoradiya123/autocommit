@@ -1,0 +1,24 @@
+name: Test Auto Commit Bot
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # Every 5 minutes
+  workflow_dispatch:       # Allows manual "Run workflow"
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Commit now + every 5 min
+        run: |
+          git config --global user.name "Hkoradiya123"
+          git config --global user.email "12345678+Hkoradiya123@users.noreply.github.com"
+
+          echo "Test update at $(date)" > heartbeat.txt
+          git add .
+          git commit -m "Test auto commit - $(date)" || echo "No changes"
+          git push
