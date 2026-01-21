@@ -1,9 +1,9 @@
-name: Test Auto Commit Bot
+name: Auto Commit Bot
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # Every 5 minutes
-  workflow_dispatch:       # Allows manual "Run workflow"
+    - cron: "0 3 * * *"   # Runs once daily at 03:00 UTC
+  workflow_dispatch:
 
 jobs:
   commit:
@@ -13,12 +13,25 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Commit now + every 5 min
+      - name: Random commits
         run: |
-          git config --global user.name "Hkoradiya123"
-          git config --global user.email "12345678+Hkoradiya123@users.noreply.github.com"
+          git config --global user.name "Auto Bot"
+          git config --global user.email "bot@github.com"
 
-          echo "Test update at $(date)" > heartbeat.txt
-          git add .
-          git commit -m "Test auto commit - $(date)" || echo "No changes"
+          # Random number between 5 and 10
+          COUNT=$((RANDOM % 6 + 5))
+          echo "Making $COUNT commits today"
+
+          for i in $(seq 1 $COUNT)
+          do
+            echo "Update $i at $(date)" > heartbeat.txt
+            git add .
+            git commit -m "Auto commit $i - $(date)" || echo "No changes"
+
+            # Safe random sleep: 5–25 minutes
+            SLEEP=$((RANDOM % 1200 + 300))
+            echo "Sleeping for $SLEEP seconds..."
+            sleep $SLEEP
+          done
+
           git push
