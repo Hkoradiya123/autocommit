@@ -2,7 +2,7 @@ name: Auto Commit Bot
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # Runs once daily at 03:00 UTC
+    - cron: "0 3 * * *"   # Runs daily at 03:00 UTC (08:30 IST)
   workflow_dispatch:
 
 jobs:
@@ -10,25 +10,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Random commits
+      - name: Auto commits
         run: |
-          git config --global user.name "Auto Bot"
-          git config --global user.email "bot@github.com"
+          # 👇 Your GitHub identity (REQUIRED for contribution graph)
+          git config --global user.name "Harsh Koradiya"
+          git config --global user.email "115660418+Hkoradiya123@users.noreply.github.com"
 
-          # Random number between 5 and 10
+          # Random number of commits (5–10)
           COUNT=$((RANDOM % 6 + 5))
           echo "Making $COUNT commits today"
 
           for i in $(seq 1 $COUNT)
           do
-            echo "Update $i at $(date)" > heartbeat.txt
-            git add .
+            echo "Auto update $i at $(date)" > heartbeat.txt
+            git add heartbeat.txt
             git commit -m "Auto commit $i - $(date)" || echo "No changes"
 
-            # Safe random sleep: 5–25 minutes
+            # Random sleep between 5–25 minutes (300–1500 sec)
             SLEEP=$((RANDOM % 1200 + 300))
             echo "Sleeping for $SLEEP seconds..."
             sleep $SLEEP
