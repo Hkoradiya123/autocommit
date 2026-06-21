@@ -1,0 +1,40 @@
+name: Weekend Auto Commit Bot
+
+on:
+  schedule:
+    - cron: "0 3 * * 6"   # Saturday 03:00 UTC
+    - cron: "0 3 * * 0"   # Sunday 03:00 UTC
+
+  workflow_dispatch:
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create weekend commits
+        run: |
+
+          git config --global user.name "Harsh Koradiya"
+          git config --global user.email "115660418+Hkoradiya123@users.noreply.github.com"
+
+          # Randomly choose 2 or 3 commits
+          COUNT=$((RANDOM % 2 + 2))
+
+          echo "Creating $COUNT commits"
+
+          for i in $(seq 1 $COUNT)
+          do
+            echo "Weekend update $i - $(date)" >> heartbeat.txt
+
+            git add heartbeat.txt
+
+            git commit -m "Weekend auto commit $i - $(date)"
+
+            sleep $((RANDOM % 20 + 5))
+          done
+
+          git push
